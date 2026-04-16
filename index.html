@@ -478,6 +478,8 @@
         
         // 1. Landing Page -> Login Portal
         ctaBtn.addEventListener('click', () => {
+            landingPage.classList.add('hidden');
+            dashboardApp.classList.remove('hidden');
             loginPortal.classList.remove('hidden');
         });
 
