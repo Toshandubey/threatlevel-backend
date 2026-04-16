@@ -2,7 +2,7 @@ import os
 import imaplib
 import email
 from email.header import decode_header
-import pickle
+import joblib
 import pandas as pd
 from flask import Flask, jsonify
 from flask_cors import CORS
@@ -27,15 +27,13 @@ def load_models():
     global model, vectorizer
     if model is None or vectorizer is None:
         try:
-            with open(MODEL_PATH, 'rb') as f:
-                model = pickle.load(f)
+            model = joblib.load(MODEL_PATH)
             print("Model loaded.")
         except Exception as e:
             print(f"Error loading model: {e}")
 
         try:
-            with open(VECTORIZER_PATH, 'rb') as f:
-                vectorizer = pickle.load(f)
+            vectorizer = joblib.load(VECTORIZER_PATH)
             print("Vectorizer loaded.")
         except Exception as e:
             print(f"Error loading vectorizer: {e}")
