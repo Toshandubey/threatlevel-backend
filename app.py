@@ -126,7 +126,7 @@ def scan_inbox():
                                 prediction = str(prediction_val)
                         except Exception as e:
                             print("Prediction error:", e)
-                            prediction = "error"
+                            prediction = f"error: {str(e)}"
                     
                     results.append({
                         "subject": subject,
