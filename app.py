@@ -15,28 +15,28 @@ app = Flask(__name__)
 # Allow CORS for all origins for testing/Vercel
 CORS(app)
 
-BASE_DIR = os.path.dirname(os.path.abspath(__name__))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, 'final_model.pkl')
 VECTORIZER_PATH = os.path.join(BASE_DIR, 'vectorizer.pkl')
 
 # Global variables for caching the model
 model = None
 vectorizer = None
+model_error = "Not loaded yet"
 
 def load_models():
-    global model, vectorizer
+    global model, vectorizer, model_error
     if model is None or vectorizer is None:
         try:
             model = joblib.load(MODEL_PATH)
-            print("Model loaded.")
         except Exception as e:
-            print(f"Error loading model: {e}")
+            model_error = f"Model err: {str(e)}"
+            return
 
         try:
             vectorizer = joblib.load(VECTORIZER_PATH)
-            print("Vectorizer loaded.")
         except Exception as e:
-            print(f"Error loading vectorizer: {e}")
+            model_error = f"Vectorizer err: {str(e)}"
 
 def get_text_from_email(msg):
     text = ""
@@ -109,7 +109,9 @@ def scan_inbox():
                     text_content = get_text_from_email(msg)
                     
                     prediction = "unknown"
-                    if text_content and model and vectorizer:
+                    if not model or not vectorizer:
+                        prediction = f"Model load failed: {model_error} at path {MODEL_PATH}"
+                    elif text_content:
                         try:
                             # If vectorizer expects iterables
                             text_vec = vectorizer.transform([text_content])
