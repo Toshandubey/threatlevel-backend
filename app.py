@@ -4,7 +4,7 @@ import email
 from email.header import decode_header
 import joblib
 import pandas as pd
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 
@@ -66,15 +66,24 @@ def get_text_from_email(msg):
 def serve_frontend():
     return send_from_directory(BASE_DIR, 'index.html')
 
-@app.route('/scan_inbox', methods=['GET'])
+@app.route('/scan_inbox', methods=['GET', 'POST', 'OPTIONS'])
 def scan_inbox():
     load_models()
     
-    username = os.environ.get("IMAP_EMAIL")
-    password = os.environ.get("IMAP_PASSWORD")
+    username = None
+    password = None
+
+    if request.method == 'POST' and request.is_json:
+        data = request.get_json()
+        username = data.get("email")
+        password = data.get("password")
 
     if not username or not password:
-        return jsonify({"error": "IMAP_EMAIL and IMAP_PASSWORD must be strictly set in .env"}), 500
+        username = os.environ.get("IMAP_EMAIL")
+        password = os.environ.get("IMAP_PASSWORD")
+
+    if not username or not password:
+        return jsonify({"error": "No credentials provided. Please supply an email and App Password."}), 400
 
     try:
         # connect to host using SSL

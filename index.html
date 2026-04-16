@@ -369,8 +369,50 @@
 <p class="font-body text-secondary uppercase tracking-widest text-[11px] font-bold">Heuristic analysis in progress</p>
 </div>
 </div>
+<!-- Login Portal Overlay -->
+<div id="login-portal" class="fixed inset-0 bg-[#0a0e14] z-[200] flex flex-col items-center justify-center p-6">
+    <div class="max-w-md w-full bg-surface-container-low border border-[#31353c]/30 p-8 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-primary-container"></div>
+        <h2 class="text-3xl font-black font-headline uppercase tracking-tighter mb-2 text-[#c8c6c5]">Operator Login</h2>
+        <p class="font-body text-[11px] uppercase tracking-widest opacity-50 mb-8 border-b border-[#31353c]/30 pb-4">Provide valid credentials to connect your inbox to the ThreatLevel neural core.</p>
+        
+        <div class="space-y-6">
+            <div>
+                <label class="block text-[10px] uppercase tracking-widest font-bold text-secondary mb-2">Gmail Address</label>
+                <input type="email" id="login-email" class="w-full bg-[#10141a] border border-[#31353c]/50 p-3 text-sm font-mono text-white focus:outline-none focus:border-secondary transition-colors" placeholder="operator@gmail.com">
+            </div>
+            <div>
+                <label class="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Google App Password</label>
+                <input type="password" id="login-password" class="w-full bg-[#10141a] border border-[#31353c]/50 p-3 text-sm font-mono text-white focus:outline-none focus:border-primary transition-colors" placeholder="•••• •••• •••• ••••">
+                <p class="text-[9px] opacity-40 mt-2 font-body font-mono">16-character code required. We do not store this data.</p>
+            </div>
+            <button id="login-submit" class="w-full bg-primary-container text-on-primary-container py-3 font-black Inter uppercase tracking-tighter hover:opacity-80 transition-all mt-4">
+                Access ThreatLevel
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- Script to demonstrate the interaction requested -->
 <script>
+        let sessionEmail = '';
+        let sessionPassword = '';
+        
+        const loginPortal = document.getElementById('login-portal');
+        const loginSubmit = document.getElementById('login-submit');
+        const loginEmail = document.getElementById('login-email');
+        const loginPassword = document.getElementById('login-password');
+        
+        loginSubmit.addEventListener('click', () => {
+            if(!loginEmail.value || !loginPassword.value) {
+                alert("Both fields required for access.");
+                return;
+            }
+            sessionEmail = loginEmail.value.trim();
+            sessionPassword = loginPassword.value.trim();
+            loginPortal.classList.add('hidden');
+        });
+
         const syncBtn = document.getElementById('sync-btn');
         const overlay = document.getElementById('loading-overlay');
         const tbody = document.getElementById('data-tbody');
@@ -379,8 +421,12 @@
             overlay.classList.remove('hidden');
             
             try {
-                // Call the live Render backend
-                const res = await fetch('https://threatlevel-backend.onrender.com/scan_inbox');
+                // Call the live Render backend via POST with credentials
+                const res = await fetch('/scan_inbox', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: sessionEmail, password: sessionPassword })
+                });
                 const data = await res.json();
                 
                 if (data.data) {
