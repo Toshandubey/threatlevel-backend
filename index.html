@@ -99,7 +99,36 @@
         }
     </style>
 </head>
-<body class="text-on-surface antialiased overflow-x-hidden">
+<body class="text-on-surface antialiased overflow-x-hidden relative">
+
+<!-- SaaS Landing Page -->
+<div id="landing-page" class="w-full min-h-screen bg-[#0a0e14] flex flex-col justify-center items-center text-center px-4 relative z-10 overflow-hidden">
+    <div class="absolute inset-0 w-full h-full object-cover opacity-[0.03] pointer-events-none" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBzL5uPU3uAFxsq8EUFoSkGJZFWy-NNox_Oqp757kErB166B7LPWksAWTfGGUO3XFpmITIxgRjwKRLRvEMnw5-i9S4Ra0EDtuHi9i30lGUqrUyiSG2el-ATIk1gxl0HetOOXzvcKiPEBe_8sV_vPKRT_bMN6CUNgom0gbURfK4otqB177jQ_O8IfbiYip6uKiSXT2oiD0flavgc8odQzMhI0rNI-zTHvChjNWXw4LWKoYbZFT1YNpOYoCGFFBU9qgdx4dUnTE1hXXI'); background-size: cover; background-position: center;"></div>
+    
+    <div class="relative z-20 max-w-4xl mx-auto flex flex-col items-center">
+        <span class="inline-flex items-center gap-2 border-l-2 border-[#990000] px-3 py-1 bg-primary-container/10 text-primary-fixed font-bold tracking-widest text-[10px] uppercase mb-8">
+            Public Beta v1.4 // Live
+        </span>
+        <h1 class="text-5xl md:text-7xl font-black font-headline uppercase tracking-tighter mb-4 text-[#dfe2eb]">
+            Neural Network <br><span class="text-primary mt-2 block">Inbox Forensics</span>
+        </h1>
+        <p class="text-tertiary opacity-60 font-body max-w-2xl mx-auto mb-10 text-sm md:text-base leading-relaxed">
+            Identify phishing attempts, spoofed domains, and social engineering attacks using cutting-edge Machine Learning. Connect your Gmail to run a live diagnostic scan on your latest traffic.
+        </p>
+        
+        <button id="cta-btn" class="bg-primary-container text-on-primary-container px-10 py-5 font-black Inter uppercase tracking-tighter hover:bg-opacity-80 active:scale-95 transition-all duration-150 text-lg shadow-[0_0_30px_rgba(153,0,0,0.3)] border border-primary-fixed/20 hover:shadow-[0_0_40px_rgba(153,0,0,0.5)]">
+            Scan My Inbox Now
+        </button>
+    </div>
+    
+    <div class="absolute bottom-8 left-0 right-0 flex justify-center gap-8 opacity-30 text-[10px] uppercase font-bold tracking-widest font-mono">
+        <span>End-to-End Encrypted</span>
+        <span class="hidden md:inline">No Logs Stored</span>
+        <span>Machine Learning V1.8.0</span>
+    </div>
+</div>
+
+<div id="dashboard-app" class="hidden">
 <!-- TopAppBar -->
 <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#10141a]">
 <div class="flex items-center gap-8">
@@ -370,59 +399,119 @@
 </div>
 </div>
 <!-- Login Portal Overlay -->
-<div id="login-portal" class="fixed inset-0 bg-[#0a0e14] z-[200] flex flex-col items-center justify-center p-6">
-    <div class="max-w-md w-full bg-surface-container-low border border-[#31353c]/30 p-8 shadow-2xl relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-1 bg-primary-container"></div>
-        <h2 class="text-3xl font-black font-headline uppercase tracking-tighter mb-2 text-[#c8c6c5]">Operator Login</h2>
-        <p class="font-body text-[11px] uppercase tracking-widest opacity-50 mb-8 border-b border-[#31353c]/30 pb-4">Provide valid credentials to connect your inbox to the ThreatLevel neural core.</p>
+<div id="login-portal" class="fixed inset-0 bg-[#0a0e14]/95 backdrop-blur-md z-[200] flex flex-col items-center justify-center p-6 hidden">
+    <div class="max-w-4xl w-full bg-surface-container-low border border-[#31353c]/30 shadow-[0_0_50px_rgba(0,0,0,0.8)] relative flex flex-col md:flex-row">
         
-        <div class="space-y-6">
-            <div>
-                <label class="block text-[10px] uppercase tracking-widest font-bold text-secondary mb-2">Gmail Address</label>
-                <input type="email" id="login-email" class="w-full bg-[#10141a] border border-[#31353c]/50 p-3 text-sm font-mono text-white focus:outline-none focus:border-secondary transition-colors" placeholder="operator@gmail.com">
+        <!-- Instructions Panel -->
+        <div class="w-full md:w-1/2 p-8 md:p-10 bg-[#10141a] border-b md:border-b-0 md:border-r border-[#31353c]/30 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-secondary"></div>
+            <h3 class="text-xl font-black font-headline uppercase tracking-tighter mb-4 text-secondary flex items-center gap-2">
+                <span class="material-symbols-outlined">verified_user</span> Authorization Required
+            </h3>
+            <p class="font-body text-[11px] opacity-60 mb-8 leading-relaxed">Because Google treats artificial intelligence scanning as a restricted action, you cannot use your normal password. You must generate a temporary 16-character App Password.</p>
+            
+            <ol class="space-y-6 font-body text-[10px] uppercase tracking-widest opacity-80">
+                <li class="flex gap-4 items-start">
+                    <span class="text-secondary font-black text-sm">01</span>
+                    <span class="mt-0.5">Go to your <strong>Google Account Settings</strong> -> Security.</span>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <span class="text-secondary font-black text-sm">02</span>
+                    <span class="mt-0.5">Ensure <strong>2-Step Verification</strong> is enabled.</span>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <span class="text-secondary font-black text-sm">03</span>
+                    <span class="mt-0.5">Search for "<strong>App Passwords</strong>" in the top settings bar.</span>
+                </li>
+                <li class="flex gap-4 items-start">
+                    <span class="text-secondary font-black text-sm">04</span>
+                    <span class="mt-0.5">Create an app named "ThreatLevel" and paste the 16-letter code here.</span>
+                </li>
+            </ol>
+            
+            <div class="mt-8 p-3 bg-secondary/10 border border-secondary/20 rounded-sm">
+                <p class="text-secondary text-[9px] uppercase tracking-widest font-bold"><span class="material-symbols-outlined text-[12px] inline align-text-bottom mr-1">security</span> We do not store your credentials. They are held temporarily in-memory and wiped when you close the tab.</p>
             </div>
-            <div>
-                <label class="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Google App Password</label>
-                <input type="password" id="login-password" class="w-full bg-[#10141a] border border-[#31353c]/50 p-3 text-sm font-mono text-white focus:outline-none focus:border-primary transition-colors" placeholder="•••• •••• •••• ••••">
-                <p class="text-[9px] opacity-40 mt-2 font-body font-mono">16-character code required. We do not store this data.</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="w-full md:w-1/2 p-8 md:p-10 relative flex flex-col justify-center">
+            <div class="absolute top-0 left-0 w-full h-1 bg-primary-container"></div>
+            <h2 class="text-3xl font-black font-headline uppercase tracking-tighter mb-2 text-[#c8c6c5]">Connect Inbox</h2>
+            <p class="font-body text-[10px] uppercase tracking-widest opacity-50 mb-8 border-b border-[#31353c]/30 pb-4">Provide valid app credentials to sync.</p>
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest font-bold text-secondary mb-2">Gmail Address</label>
+                    <input type="email" id="login-email" class="w-full bg-[#0a0e14] border border-[#31353c]/50 p-4 text-sm font-mono text-white focus:outline-none focus:border-secondary transition-colors shadow-inner" placeholder="operator@gmail.com">
+                </div>
+                <div>
+                    <label class="block text-[10px] uppercase tracking-widest font-bold text-primary mb-2">Google App Password</label>
+                    <input type="password" id="login-password" class="w-full bg-[#0a0e14] border border-[#31353c]/50 p-4 text-sm font-mono text-white focus:outline-none focus:border-primary transition-colors shadow-inner tracking-widest" placeholder="•••• •••• •••• ••••">
+                </div>
+                <button id="login-submit" class="w-full bg-primary-container text-on-primary-container py-4 font-black Inter uppercase tracking-tighter hover:bg-opacity-80 transition-all mt-4 border border-primary/20 hover:border-primary/50">
+                    Authenticate Session
+                </button>
             </div>
-            <button id="login-submit" class="w-full bg-primary-container text-on-primary-container py-3 font-black Inter uppercase tracking-tighter hover:opacity-80 transition-all mt-4">
-                Access ThreatLevel
-            </button>
         </div>
     </div>
 </div>
 
 <!-- Script to demonstrate the interaction requested -->
 <script>
-        let sessionEmail = '';
-        let sessionPassword = '';
-        
+        // DOM Elements
+        const ctaBtn = document.getElementById('cta-btn');
         const loginPortal = document.getElementById('login-portal');
+        const landingPage = document.getElementById('landing-page');
+        const dashboardApp = document.getElementById('dashboard-app');
+        
         const loginSubmit = document.getElementById('login-submit');
         const loginEmail = document.getElementById('login-email');
         const loginPassword = document.getElementById('login-password');
         
-        loginSubmit.addEventListener('click', () => {
-            if(!loginEmail.value || !loginPassword.value) {
-                alert("Both fields required for access.");
-                return;
-            }
-            sessionEmail = loginEmail.value.trim();
-            sessionPassword = loginPassword.value.trim();
-            loginPortal.classList.add('hidden');
-        });
-
         const syncBtn = document.getElementById('sync-btn');
         const overlay = document.getElementById('loading-overlay');
         const tbody = document.getElementById('data-tbody');
         
+        let sessionEmail = '';
+        let sessionPassword = '';
+        
+        // 1. Landing Page -> Login Portal
+        ctaBtn.addEventListener('click', () => {
+            loginPortal.classList.remove('hidden');
+        });
+
+        // 2. Login Portal -> Dashboard
+        loginSubmit.addEventListener('click', () => {
+            if(!loginEmail.value || !loginPassword.value) {
+                alert("Both Email and App Password are required for connection.");
+                return;
+            }
+            
+            // Store temporarily
+            sessionEmail = loginEmail.value.trim();
+            sessionPassword = loginPassword.value.trim();
+            
+            // UI Transition
+            loginPortal.classList.add('hidden');
+            landingPage.classList.add('hidden');
+            dashboardApp.classList.remove('hidden');
+            
+            // Optionally clear inputs for security
+            loginEmail.value = '';
+            loginPassword.value = '';
+            
+            // Auto Trigger the scan!
+            syncBtn.click();
+        });
+
+        // 3. Scan Inbox Action (Auto-Triggered or Manual)
         syncBtn.addEventListener('click', async () => {
             overlay.classList.remove('hidden');
             
             try {
                 // Call the live Render backend via POST with credentials
-                const res = await fetch('/scan_inbox', {
+                const res = await fetch('https://threatlevel-backend.onrender.com/scan_inbox', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: sessionEmail, password: sessionPassword })
@@ -466,4 +555,5 @@
             }
         });
     </script>
+</div> <!-- End dashboard-app -->
 </body></html>
