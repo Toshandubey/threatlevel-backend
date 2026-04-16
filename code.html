@@ -115,7 +115,7 @@
 <span class="text-[10px] uppercase tracking-widest opacity-50">Model Accuracy</span>
 <span class="text-secondary font-bold font-body">99.4%</span>
 </div>
-<button class="bg-primary-container text-on-primary-container px-6 py-2 font-black Inter uppercase tracking-tighter hover:opacity-80 active:scale-95 transition-all duration-150">
+<button id="sync-btn" class="bg-primary-container text-on-primary-container px-6 py-2 font-black Inter uppercase tracking-tighter hover:opacity-80 active:scale-95 transition-all duration-150">
                 Sync Inbox
             </button>
 <div class="flex gap-2">
@@ -265,7 +265,7 @@
 <th class="px-6 py-4 text-right">Timestamp</th>
 </tr>
 </thead>
-<tbody class="font-body text-xs">
+<tbody id="data-tbody" class="font-body text-xs">
 <!-- Row 1: Phishing -->
 <tr class="bg-surface border-b border-[#31353c]/10 hover:bg-surface-container-high transition-colors">
 <td class="px-6 py-5">
@@ -371,17 +371,53 @@
 </div>
 <!-- Script to demonstrate the interaction requested -->
 <script>
-        const syncBtn = document.querySelector('button:contains("Sync Inbox")') || document.querySelectorAll('button')[0]; // Simple selector for demo
+        const syncBtn = document.getElementById('sync-btn');
         const overlay = document.getElementById('loading-overlay');
+        const tbody = document.getElementById('data-tbody');
         
-        // Manual implementation for UI demonstration since we can't use complex scripts or frameworks here per constraints
-        function simulateSync() {
+        syncBtn.addEventListener('click', async () => {
             overlay.classList.remove('hidden');
-            setTimeout(() => {
+            
+            try {
+                // Call the live Render backend
+                const res = await fetch('https://threatlevel-backend.onrender.com/scan_inbox');
+                const data = await res.json();
+                
+                if (data.data) {
+                    tbody.innerHTML = ''; // Clear default hardcoded rows
+                    
+                    data.data.forEach(item => {
+                        const tr = document.createElement('tr');
+                        const isPhishing = item.prediction === 'phishing';
+                        
+                        tr.className = isPhishing 
+                            ? "bg-surface border-b border-[#31353c]/10 hover:bg-surface-container-high transition-colors"
+                            : "bg-surface-container-low border-b border-[#31353c]/10 hover:bg-surface-container-high transition-colors";
+                            
+                        const badgeHtml = isPhishing
+                            ? `<span class="inline-flex items-center gap-2 border-l-2 border-[#990000] px-3 py-1 bg-primary-container/10 text-primary-fixed font-bold tracking-tight">PHISHING DETECTED</span>`
+                            : `<span class="inline-flex items-center gap-2 border-l-2 border-[#77dc7a] px-3 py-1 bg-secondary-container/10 text-secondary font-bold tracking-tight">CLEAN</span>`;
+                            
+                        const colorClass = isPhishing ? 'text-primary' : 'text-secondary';
+                        const snippetClass = isPhishing ? 'text-tertiary opacity-50 italic' : 'text-tertiary opacity-50';
+                        
+                        tr.innerHTML = `
+                            <td class="px-6 py-5">${badgeHtml}</td>
+                            <td class="px-6 py-5 font-mono ${colorClass} opacity-90">${item.sender.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</td>
+                            <td class="px-6 py-5 font-bold uppercase tracking-tight">${item.subject.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</td>
+                            <td class="px-6 py-5 ${snippetClass}">"${item.snippet.replace(/</g, '&lt;').replace(/>/g, '&gt;')}"</td>
+                            <td class="px-6 py-5 text-right opacity-40 font-mono">LIVE</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    alert('Error from API: ' + JSON.stringify(data));
+                }
+            } catch (err) {
+                alert('Connection to backend failed. Make sure backend is awake! ' + err);
+            } finally {
                 overlay.classList.add('hidden');
-            }, 3000);
-        }
-
-        // Just as an illustration - the actual button would be wired to GET /scan_inbox
+            }
+        });
     </script>
 </body></html>
