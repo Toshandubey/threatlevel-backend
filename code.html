@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ThreatLevel // Fake Email Detection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&amp;family=Space+Grotesk:wght@300;400;500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#bbb8b8",
+                        "on-primary": "#690000",
+                        "primary": "#ffb4a8",
+                        "primary-fixed-dim": "#ffb4a8",
+                        "on-secondary": "#00390c",
+                        "secondary-fixed-dim": "#77dc7a",
+                        "inverse-surface": "#dfe2eb",
+                        "on-surface": "#dfe2eb",
+                        "secondary": "#77dc7a",
+                        "surface-tint": "#ffb4a8",
+                        "error-container": "#93000a",
+                        "surface-bright": "#353940",
+                        "secondary-fixed": "#93f993",
+                        "surface-container-lowest": "#0a0e14",
+                        "inverse-primary": "#b82014",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "primary-container": "#990000",
+                        "primary-fixed": "#ffdad4",
+                        "on-surface-variant": "#e4beb8",
+                        "on-tertiary": "#313030",
+                        "on-primary-fixed-variant": "#930000",
+                        "surface-container": "#1c2026",
+                        "on-primary-container": "#ffa092",
+                        "outline-variant": "#5b403c",
+                        "on-tertiary-fixed-variant": "#474646",
+                        "background": "#10141a",
+                        "surface-container-high": "#262a31",
+                        "surface-container-low": "#181c22",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed": "#410000",
+                        "on-error": "#690005",
+                        "secondary-container": "#007924",
+                        "tertiary": "#c8c6c5",
+                        "on-background": "#dfe2eb",
+                        "inverse-on-surface": "#2d3137",
+                        "surface-variant": "#31353c",
+                        "outline": "#ab8983",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "on-secondary-container": "#9aff99",
+                        "tertiary-container": "#4a4949",
+                        "on-secondary-fixed-variant": "#005316",
+                        "surface-container-highest": "#31353c",
+                        "surface-dim": "#10141a",
+                        "surface": "#10141a",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed": "#002105",
+                        "tertiary-fixed": "#e5e2e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Space Grotesk"],
+                        "label": ["Space Grotesk"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #10141a;
+            font-family: 'Space Grotesk', monospace;
+        }
+        .header-font {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom horizontal threat meter styling */
+        .threat-meter-track {
+            height: 4px;
+            background: #31353c;
+            position: relative;
+        }
+        .threat-meter-fill {
+            height: 100%;
+            background: #990000;
+        }
+    </style>
+</head>
+<body class="text-on-surface antialiased overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 bg-[#10141a]">
+<div class="flex items-center gap-8">
+<h1 class="text-2xl font-black tracking-tighter text-[#c8c6c5] dark:text-[#c8c6c5] Inter uppercase">ThreatLevel</h1>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="text-secondary border-b-2 border-secondary pb-1 Inter uppercase font-black tracking-tighter text-sm" href="#">Dashboard</a>
+<a class="text-[#c8c6c5] opacity-50 hover:bg-[#31353c] transition-colors duration-150 Inter uppercase font-black tracking-tighter text-sm" href="#">Analytics</a>
+<a class="text-[#c8c6c5] opacity-50 hover:bg-[#31353c] transition-colors duration-150 Inter uppercase font-black tracking-tighter text-sm" href="#">Logs</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex flex-col items-end mr-4">
+<span class="text-[10px] uppercase tracking-widest opacity-50">Model Accuracy</span>
+<span class="text-secondary font-bold font-body">99.4%</span>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 font-black Inter uppercase tracking-tighter hover:opacity-80 active:scale-95 transition-all duration-150">
+                Sync Inbox
+            </button>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-[#31353c] transition-colors duration-150">
+<span class="material-symbols-outlined text-tertiary">settings</span>
+</button>
+<button class="p-2 hover:bg-[#31353c] transition-colors duration-150">
+<span class="material-symbols-outlined text-tertiary">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Sidebar -->
+<aside class="fixed left-0 top-0 h-screen flex flex-col pt-24 border-r border-[#31353c]/15 w-64 bg-[#0a0e14] hidden md:flex">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 p-3 bg-surface-container-low border-l-2 border-primary-container">
+<div class="w-10 h-10 bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">terminal</span>
+</div>
+<div>
+<p class="text-[11px] uppercase tracking-widest font-bold font-body">OPERATOR_01</p>
+<p class="text-[9px] opacity-40 font-body">LEVEL 4 CLEARANCE</p>
+</div>
+</div>
+</div>
+<nav class="flex-1">
+<ul class="space-y-1">
+<li>
+<a class="flex items-center gap-4 px-6 py-4 bg-[#31353c] text-[#77dc7a] border-l-4 border-[#77dc7a] transition-all duration-75 ease-in" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mail</span>
+<span class="text-[11px] uppercase tracking-widest font-bold font-body">Primary Feed</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-6 py-4 text-[#c8c6c5] opacity-40 hover:opacity-100 hover:bg-[#10141a] transition-all duration-75 ease-in" href="#">
+<span class="material-symbols-outlined">gpp_bad</span>
+<span class="text-[11px] uppercase tracking-widest font-bold font-body">Threat Vault</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-6 py-4 text-[#c8c6c5] opacity-40 hover:opacity-100 hover:bg-[#10141a] transition-all duration-75 ease-in" href="#">
+<span class="material-symbols-outlined">hub</span>
+<span class="text-[11px] uppercase tracking-widest font-bold font-body">Network Map</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-4 px-6 py-4 text-[#c8c6c5] opacity-40 hover:opacity-100 hover:bg-[#10141a] transition-all duration-75 ease-in" href="#">
+<span class="material-symbols-outlined">terminal</span>
+<span class="text-[11px] uppercase tracking-widest font-bold font-body">System Health</span>
+</a>
+</li>
+</ul>
+</nav>
+<div class="p-6 border-t border-[#31353c]/15">
+<button class="w-full bg-primary-container text-on-primary-container py-3 font-black Inter uppercase tracking-tighter text-xs">
+                NEW SCAN
+            </button>
+<div class="mt-4 space-y-2">
+<a class="flex items-center gap-2 text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-sm">help</span> Documentation
+                </a>
+<a class="flex items-center gap-2 text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100" href="#">
+<span class="material-symbols-outlined text-sm">logout</span> Logout
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="md:ml-64 pt-24 pb-20 min-h-screen">
+<div class="max-w-7xl mx-auto p-8">
+<!-- Page Header / Metric Bar -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-0 mb-12 border-b border-[#31353c]/30 pb-8">
+<div class="md:col-span-2">
+<h2 class="text-4xl font-black Inter uppercase tracking-tighter mb-2">Live Inbox Analysis</h2>
+<p class="text-tertiary opacity-60 font-body text-sm max-w-xl">
+                        Forensic mail scanning active. All incoming transmissions are being analyzed against current exploit patterns and social engineering heuristics.
+                    </p>
+</div>
+<div class="flex flex-col justify-end items-end gap-2">
+<span class="text-[11px] uppercase tracking-widest font-bold font-body text-primary">Global Threat Level</span>
+<div class="w-full h-8 bg-surface-container-lowest flex items-center px-4">
+<div class="flex gap-1 w-full">
+<div class="h-4 flex-1 bg-primary-container"></div>
+<div class="h-4 flex-1 bg-primary-container"></div>
+<div class="h-4 flex-1 bg-primary-container"></div>
+<div class="h-4 flex-1 bg-primary-container opacity-20"></div>
+<div class="h-4 flex-1 bg-primary-container opacity-20"></div>
+</div>
+<span class="ml-4 font-body font-bold text-primary">CRITICAL</span>
+</div>
+</div>
+</div>
+<!-- Bento Grid Highlights -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12">
+<div class="lg:col-span-8 bg-surface-container-low p-6 flex flex-col justify-between border-t border-secondary/20">
+<div>
+<span class="text-[10px] uppercase tracking-widest font-bold text-secondary mb-4 block">Neural Core Status</span>
+<h3 class="text-2xl font-black font-headline tracking-tighter mb-4">SYSTEM_CHECK: STABLE</h3>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="p-3 bg-surface-container-lowest">
+<p class="text-[9px] opacity-40 uppercase tracking-widest">Latency</p>
+<p class="text-xl font-body">14ms</p>
+</div>
+<div class="p-3 bg-surface-container-lowest">
+<p class="text-[9px] opacity-40 uppercase tracking-widest">Scanned</p>
+<p class="text-xl font-body">24,891</p>
+</div>
+<div class="p-3 bg-surface-container-lowest">
+<p class="text-[9px] opacity-40 uppercase tracking-widest">Isolated</p>
+<p class="text-xl font-body text-primary font-bold">142</p>
+</div>
+<div class="p-3 bg-surface-container-lowest">
+<p class="text-[9px] opacity-40 uppercase tracking-widest">Uptime</p>
+<p class="text-xl font-body">99.9%</p>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-4 relative group overflow-hidden bg-surface-container-low border-t border-primary/20 p-6">
+<img class="absolute inset-0 w-full h-full object-cover opacity-10 grayscale group-hover:scale-105 transition-transform duration-500" data-alt="Abstract digital network visualization with high contrast red and black grid patterns and binary code overlay" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzL5uPU3uAFxsq8EUFoSkGJZFWy-NNox_Oqp757kErB166B7LPWksAWTfGGUO3XFpmITIxgRjwKRLRvEMnw5-i9S4Ra0EDtuHi9i30lGUqrUyiSG2el-ATIk1gxl0HetOOXzvcKiPEBe_8sV_vPKRT_bMN6CUNgom0gbURfK4otqB177jQ_O8IfbiYip6uKiSXT2oiD0flavgc8odQzMhI0rNI-zTHvChjNWXw4LWKoYbZFT1YNpOYoCGFFBU9qgdx4dUnTE1hXXI"/>
+<div class="relative z-10 flex flex-col h-full justify-between">
+<span class="text-[10px] uppercase tracking-widest font-bold text-primary">Last Breach Detected</span>
+<div>
+<p class="text-3xl font-black font-headline tracking-tighter text-primary">IP: 192.168.1.254</p>
+<p class="text-xs font-body opacity-60">Source: Moscow, RU // 14:22:01 UTC</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Data Table -->
+<div class="bg-surface-container-low overflow-hidden">
+<div class="px-6 py-4 border-b border-[#31353c]/30 flex justify-between items-center bg-surface-container-lowest">
+<h3 class="text-[11px] uppercase tracking-widest font-bold font-body">Incoming Traffic Stream</h3>
+<div class="flex gap-4">
+<span class="text-[10px] text-secondary">● LIVE_FEED</span>
+<span class="text-[10px] opacity-40 uppercase tracking-widest">Filter: All Records</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container text-[10px] uppercase tracking-widest font-bold font-body border-b border-[#31353c]/30">
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4">Sender Metadata</th>
+<th class="px-6 py-4">Subject Vector</th>
+<th class="px-6 py-4">Payload Snippet</th>
+<th class="px-6 py-4 text-right">Timestamp</th>
+</tr>
+</thead>
+<tbody class="font-body text-xs">
+<!-- Row 1: Phishing -->
+<tr class="bg-surface border-b border-[#31353c]/10 hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-2 border-l-2 border-[#990000] px-3 py-1 bg-primary-container/10 text-primary-fixed font-bold tracking-tight">
+                                        PHISHING DETECTED
+                                    </span>
+</td>
+<td class="px-6 py-5 font-mono text-primary opacity-90">admin-verify@amaz0n-security.co</td>
+<td class="px-6 py-5 font-bold uppercase tracking-tight">Immediate Action Required: Unusual Sign-in Activity</td>
+<td class="px-6 py-5 text-tertiary opacity-50 italic">"We have detected a login from a new device in..."</td>
+<td class="px-6 py-5 text-right opacity-40 font-mono">15:42:01</td>
+</tr>
+<!-- Row 2: Clean -->
+<tr class="bg-surface-container-low border-b border-[#31353c]/10 hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-2 border-l-2 border-[#77dc7a] px-3 py-1 bg-secondary-container/10 text-secondary font-bold tracking-tight">
+                                        CLEAN
+                                    </span>
+</td>
+<td class="px-6 py-5 font-mono text-secondary opacity-90">h.watson@corporate.local</td>
+<td class="px-6 py-5 font-bold uppercase tracking-tight">Q3 Security Audit Requirements</td>
+<td class="px-6 py-5 text-tertiary opacity-50">"Please find attached the updated protocol for..."</td>
+<td class="px-6 py-5 text-right opacity-40 font-mono">15:39:44</td>
+</tr>
+<!-- Row 3: Phishing -->
+<tr class="bg-surface border-b border-[#31353c]/10 hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-2 border-l-2 border-[#990000] px-3 py-1 bg-primary-container/10 text-primary-fixed font-bold tracking-tight">
+                                        PHISHING DETECTED
+                                    </span>
+</td>
+<td class="px-6 py-5 font-mono text-primary opacity-90">no-reply@irs-gov-refund.net</td>
+<td class="px-6 py-5 font-bold uppercase tracking-tight">Tax Refund Available - Click to Claim</td>
+<td class="px-6 py-5 text-tertiary opacity-50 italic">"Final notice: You have an unclaimed balance of $1,240..."</td>
+<td class="px-6 py-5 text-right opacity-40 font-mono">15:35:12</td>
+</tr>
+<!-- Row 4: Clean -->
+<tr class="bg-surface-container-low border-b border-[#31353c]/10 hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-2 border-l-2 border-[#77dc7a] px-3 py-1 bg-secondary-container/10 text-secondary font-bold tracking-tight">
+                                        CLEAN
+                                    </span>
+</td>
+<td class="px-6 py-5 font-mono text-secondary opacity-90">github-notifications@github.com</td>
+<td class="px-6 py-5 font-bold uppercase tracking-tight">[Security] Vulnerability found in threat-level/api</td>
+<td class="px-6 py-5 text-tertiary opacity-50">"Dependabot alerted you about a security vulnerability..."</td>
+<td class="px-6 py-5 text-right opacity-40 font-mono">15:30:00</td>
+</tr>
+<!-- Row 5: Phishing -->
+<tr class="bg-surface border-b border-[#31353c]/10 hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-2 border-l-2 border-[#990000] px-3 py-1 bg-primary-container/10 text-primary-fixed font-bold tracking-tight">
+                                        PHISHING DETECTED
+                                    </span>
+</td>
+<td class="px-6 py-5 font-mono text-primary opacity-90">ceo@v-company-internal.com</td>
+<td class="px-6 py-5 font-bold uppercase tracking-tight">Urgent Wire Transfer Request</td>
+<td class="px-6 py-5 text-tertiary opacity-50 italic">"I am in a meeting and need a rush payment made to..."</td>
+<td class="px-6 py-5 text-right opacity-40 font-mono">15:28:55</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Footer Metric -->
+<div class="p-4 bg-surface-container-lowest flex justify-between items-center text-[10px] uppercase tracking-widest font-bold opacity-30">
+<div class="flex gap-8">
+<span>Buffer: 100% Optimized</span>
+<span>Connection: Encrypted TLS 1.3</span>
+</div>
+<span>Page 01 // Total Elements: 1,421</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Status Bar -->
+<footer class="fixed bottom-0 left-0 right-0 z-40 bg-[#0a0e14] border-t border-[#31353c]/30 h-12 md:ml-64 flex items-center px-8">
+<div class="flex items-center gap-12 w-full justify-start text-[10px] font-mono tracking-widest">
+<div class="flex items-center gap-3">
+<span class="text-[#c8c6c5] opacity-40">TOTAL SCANNED:</span>
+<span class="text-secondary font-bold">1,248,912</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-[#c8c6c5] opacity-40">TOTAL BLOCKED:</span>
+<span class="text-primary font-bold">4,129</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-[#c8c6c5] opacity-40">AVG LATENCY:</span>
+<span class="text-secondary font-bold">14.2ms</span>
+</div>
+<div class="ml-auto hidden lg:flex items-center gap-2 opacity-20">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+<span>SYSTEM_NODE_01_ACTIVE</span>
+</div>
+</div>
+</footer>
+<!-- Scanning Overlay (Hidden by default, triggered by "Sync Inbox") -->
+<div class="fixed inset-0 bg-background/90 z-[100] hidden flex items-center justify-center backdrop-blur-md" id="loading-overlay">
+<div class="text-center">
+<div class="w-24 h-24 border-4 border-primary/20 border-t-primary-container mb-6 mx-auto animate-spin"></div>
+<h2 class="text-4xl font-black font-headline uppercase tracking-tighter mb-2">Scanning servers...</h2>
+<p class="font-body text-secondary uppercase tracking-widest text-[11px] font-bold">Heuristic analysis in progress</p>
+</div>
+</div>
+<!-- Script to demonstrate the interaction requested -->
+<script>
+        const syncBtn = document.querySelector('button:contains("Sync Inbox")') || document.querySelectorAll('button')[0]; // Simple selector for demo
+        const overlay = document.getElementById('loading-overlay');
+        
+        // Manual implementation for UI demonstration since we can't use complex scripts or frameworks here per constraints
+        function simulateSync() {
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Just as an illustration - the actual button would be wired to GET /scan_inbox
+    </script>
+</body></html>
