@@ -4,7 +4,7 @@ import email
 from email.header import decode_header
 import joblib
 import pandas as pd
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 from dotenv import load_dotenv
 
@@ -61,6 +61,10 @@ def get_text_from_email(msg):
             except Exception:
                 pass
     return text.strip()
+
+@app.route('/', methods=['GET'])
+def serve_frontend():
+    return send_from_directory(BASE_DIR, 'index.html')
 
 @app.route('/scan_inbox', methods=['GET'])
 def scan_inbox():
